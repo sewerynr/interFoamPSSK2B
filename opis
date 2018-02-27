@@ -1,0 +1,10 @@
+InterFoam + zapis krzywizny + wygladzania alfy w kazdej iteracji dla momentu, podmiana + wygladzanie alfy na poczatku dla transportu alfy
+
+Parametry sterujące dla wygladzania w controlDict
+
+smoothIterPre defaultowo 0 
+smoothIter defaultowo 0
+
+dla 0 wylaczone
+
+B- bounded liczenie krzywizny z ograniczonej alphy

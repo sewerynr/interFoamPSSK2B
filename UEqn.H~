@@ -1,0 +1,36 @@
+    fvVectorMatrix UEqn
+    (
+        fvm::ddt(rho, U)
+      + fvm::div(rhoPhi, U)
+      + turbulence->divDevRhoReff(rho, U)
+     ==
+        fvOptions(rho, U)
+    );
+
+    UEqn.relax();
+
+    fvOptions.constrain(UEqn);
+
+    if (pimple.momentumPredictor())
+    {
+        solve
+        (
+            UEqn
+         ==
+            fvc::reconstruct
+            (
+                (
+                    mixture.surfaceTensionForce()
+                  - ghf*fvc::snGrad(rho)
+                  - fvc::snGrad(p_rgh)
+                ) * mesh.magSf()
+            )
+        );
+
+        fvOptions.correct(U);
+    }
+
+// mixture.surfaceTensionForce() = fvc::interpolate(sigmaK())*fvc::snGrad(alpha1_);
+// za pomoca wybr schematu oblicza grad alfy z jej wart w sasiednich komorkach:
+// const volVectorField gradAlpha(fvc::grad(alpha1_, "nHat"));
+// potem normalizuje i liczy z tego div aby dostac krzywizne
